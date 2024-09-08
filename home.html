@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Superhero Database</title>
+</head>
+<body>
+    <h1>Superhero Database</h1>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for a superhero...">
+        <select id="pageSize">
+            <option value="10">10 per page</option>
+            <option value="20" selected>20 per page</option>
+            <option value="50">50 per page</option>
+            <option value="100">100 per page</option>
+            <option value="all">All results</option>
+        </select>
+    </div>
+
+    <table id="hero-table">
+        <thead>
+            <tr>
+                <th data-sort="images.xs">Icon</th>
+                <th data-sort="name">Name</th>
+                <th data-sort="biography.fullName">Full Name</th>
+                <th>Powerstats</th>
+                <th data-sort="appearance.race">Race</th>
+                <th data-sort="appearance.gender">Gender</th>
+                <th data-sort="appearance.height">Height</th>
+                <th data-sort="appearance.weight">Weight</th>
+                <th data-sort="biography.placeOfBirth">Place of Birth</th>
+                <th data-sort="biography.alignment">Alignment</th>
+            </tr>
+        </thead>
+        <tbody id="hero-list"></tbody>
+    </table>
+
+    <div id="pagination" class="pagination"></div>
+
+    <div id="hero-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="hero-details"></div>
+        </div>
+    </div>
+    <script src="heroDatabase.js"></script>
+</body>
+</html>
