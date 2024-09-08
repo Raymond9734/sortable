@@ -39,7 +39,7 @@ function createHeroRow(hero) {
         <td data-label="Powerstats">
             <div class="powerstats">
                 ${Object.entries(hero.powerstats).map(([stat, value]) => 
-                    `<span class="powerstat">${stat}: ${value}</span>`
+                    `<span class="powerstat" data-stat="${stat}">${stat}: ${value}</span>`
                 ).join('')}
             </div>
         </td>
@@ -50,7 +50,11 @@ function createHeroRow(hero) {
         <td data-label="Place of Birth">${hero.biography.placeOfBirth || ''}</td>
         <td data-label="Alignment">${hero.biography.alignment || ''}</td>
     `;
-    row.addEventListener('click', () => showHeroDetails(hero));
+    row.addEventListener('click', (e) => {
+        if (!e.target.closest('.powerstat')) {
+            showHeroDetails(hero);
+        }
+    });
     return row;
 }
 
@@ -85,8 +89,16 @@ function filterHeroes() {
 
 function sortHeroes(heroesToSort) {
     return heroesToSort.sort((a, b) => {
-        let aValue = getNestedProperty(a, sortColumn);
-        let bValue = getNestedProperty(b, sortColumn);
+        let aValue, bValue;
+        
+        if (sortColumn.startsWith('powerstats.')) {
+            const stat = sortColumn.split('.')[1];
+            aValue = a.powerstats[stat];
+            bValue = b.powerstats[stat];
+        } else {
+            aValue = getNestedProperty(a, sortColumn);
+            bValue = getNestedProperty(b, sortColumn);
+        }
 
         if (typeof aValue === 'string') aValue = aValue.toLowerCase();
         if (typeof bValue === 'string') bValue = bValue.toLowerCase();
@@ -143,6 +155,7 @@ searchInput.addEventListener('input', () => {
     currentPage = 1;
     renderHeroes();
 });
+
 pageSizeSelect.addEventListener('change', (e) => {
     pageSize = e.target.value === 'all' ? 'all' : parseInt(e.target.value);
     currentPage = 1;
@@ -160,6 +173,23 @@ document.querySelectorAll('th[data-sort]').forEach(th => {
         }
         renderHeroes();
     });
+   
+});
+
+// Add event listener for powerstat sorting
+document.getElementById('hero-list').addEventListener('click', (e) => {
+    const powerstat = e.target.closest('.powerstat');
+    console.log(sortColumn)
+    if (powerstat) {
+        const stat = powerstat.dataset.stat;
+        sortColumn = `powerstats.${stat}`;
+        if (sortColumn === `powerstats.${stat}`) {
+            sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortOrder = 'desc';
+        }
+        renderHeroes();
+    }
 });
 
 // Fetch the superhero data
